@@ -2,10 +2,19 @@ package telegram
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/patriarch11/go-tg-task-bot/internal/entity"
 	"github.com/patriarch11/go-tg-task-bot/internal/protocol"
 	"github.com/patriarch11/go-tg-task-bot/internal/repository"
 	"github.com/patriarch11/go-tg-task-bot/pkg/datasource"
 	"log"
+)
+
+type State int
+
+const (
+	None State = iota
+	WaitForSubjectName
+	WaitForSubjectDescription
 )
 
 type Bot struct {
@@ -13,6 +22,8 @@ type Bot struct {
 	taskRepository    protocol.PostgresTaskRepository
 	subjectRepository protocol.PostgresSubjectRepository
 	adminUserName     string
+	state             State
+	subject           entity.Subject
 }
 
 func NewBot(bot *tgbotapi.BotAPI, userName string,
@@ -32,6 +43,7 @@ func (b *Bot) Start() {
 }
 
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
+	// TODO: must handle errors
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			_ = b.handleCallback(update.CallbackQuery)
@@ -41,7 +53,7 @@ func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 			_ = b.handleCommand(update.Message)
 			continue
 		}
-		b.handleMessage(update.Message)
+		_ = b.handleMessage(update.Message)
 	}
 }
 

@@ -38,10 +38,14 @@ func (b *Bot) handleStartCommand(message *tgbotapi.Message) error {
 func (b *Bot) handleAddSubjectCommand(message *tgbotapi.Message) error {
 	if !b.isAdmin(message) {
 		msg := tgbotapi.NewMessage(message.Chat.ID, "permission denied")
-		_, err := b.bot.Send(msg)
-		return err
+		if _, err := b.bot.Send(msg); err != nil {
+			return err
+		}
+		return nil
 	}
-	msg := tgbotapi.NewMessage(message.Chat.ID, "додавання предмету")
+
+	msg := tgbotapi.NewMessage(message.Chat.ID, "Введіть назву предмету")
+	b.state = WaitForSubjectName
 	if _, err := b.bot.Send(msg); err != nil {
 		return err
 	}
@@ -57,6 +61,17 @@ func (b *Bot) handleShowSubjectsCommand(message *tgbotapi.Message) error {
 	return nil
 }
 
+func (b *Bot) handleMessage(message *tgbotapi.Message) error {
+	switch b.state {
+	case WaitForSubjectName:
+		return b.addNameSubject(message)
+	case WaitForSubjectDescription:
+		return b.addDescriptionSubject(message)
+	default:
+		return nil
+	}
+}
+
 func (b *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
 	callback := tgbotapi.NewCallback(callbackQuery.ID, callbackQuery.Data)
 	if _, err := b.bot.Request(callback); err != nil {
@@ -67,11 +82,6 @@ func (b *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
 		return err
 	}
 	return nil
-}
-
-func (b *Bot) handleMessage(message *tgbotapi.Message) {
-	msg := tgbotapi.NewMessage(message.Chat.ID, message.Text)
-	b.bot.Send(msg)
 }
 
 func (b *Bot) isAdmin(message *tgbotapi.Message) bool {
