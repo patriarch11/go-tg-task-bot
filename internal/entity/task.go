@@ -9,3 +9,10 @@ type Task struct {
 }
 
 type ListTasks []*Task
+
+func (t Task) CallbackData(operationType OperationType) Callback {
+	return Callback{
+		ID:            t.ID,
+		OperationType: operationType,
+	}
+}

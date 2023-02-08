@@ -14,6 +14,12 @@ func subjectMessage(message *tgbotapi.Message, subject entity.Subject) tgbotapi.
 	return msg
 }
 
+func taskMessage(chatID int64, task entity.Task) tgbotapi.MessageConfig {
+	msgText := fmt.Sprintf("Завдання:\n\n%s", task.Description)
+	msg := tgbotapi.NewMessage(chatID, msgText)
+	msg.ReplyMarkup = inlineTaskMarkup(task)
+	return msg
+}
 func inlineSubjectMarkup(subject entity.Subject) tgbotapi.InlineKeyboardMarkup {
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
@@ -23,6 +29,15 @@ func inlineSubjectMarkup(subject entity.Subject) tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			dto.SubjectToInlineKbRow(entity.DeleteSubject, "Видалити", subject),
 			dto.SubjectToInlineKbRow(entity.UpdateSubject, "Редагувати", subject),
+		),
+	)
+}
+
+func inlineTaskMarkup(task entity.Task) tgbotapi.InlineKeyboardMarkup {
+	return tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			dto.TaskToInlineKb(entity.DeleteTask, "Видалити", task),
+			dto.TaskToInlineKb(entity.UpdateTask, "Редагувати", task),
 		),
 	)
 }

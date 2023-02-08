@@ -15,7 +15,7 @@ func (b *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
 
 	switch callback.OperationType {
 	case entity.GetTasks:
-		// get tasks
+		return b.showTasks(callbackQuery.Message.Chat.ID, callback.ID)
 	case entity.AddTask:
 		if !b.isAdmin(callbackQuery.From.UserName) {
 			return b.notAdminResponse(callbackQuery.Message.Chat.ID)
