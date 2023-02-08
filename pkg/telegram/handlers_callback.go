@@ -20,27 +20,27 @@ func (b *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
 		if !b.isAdmin(callbackQuery.From.UserName) {
 			return b.notAdminResponse(callbackQuery.Message.Chat.ID)
 		}
-		// add task
+		return b.startCreatingTask(callbackQuery, callback)
 	case entity.UpdateTask:
 		if !b.isAdmin(callbackQuery.From.UserName) {
 			return b.notAdminResponse(callbackQuery.Message.Chat.ID)
 		}
-		// update task
+		return b.startUpdateTask(callbackQuery, callback)
 	case entity.DeleteTask:
 		if !b.isAdmin(callbackQuery.From.UserName) {
 			return b.notAdminResponse(callbackQuery.Message.Chat.ID)
 		}
-		// delete task
+		return b.deleteTask(callbackQuery, callback)
 	case entity.UpdateSubject:
 		if !b.isAdmin(callbackQuery.From.UserName) {
 			return b.notAdminResponse(callbackQuery.Message.Chat.ID)
 		}
-		// update subject
+		return b.startUpdateSubject(callbackQuery, callback)
 	case entity.DeleteSubject:
 		if !b.isAdmin(callbackQuery.From.UserName) {
 			return b.notAdminResponse(callbackQuery.Message.Chat.ID)
 		}
-		// delete subject
+		return b.deleteSubject(callbackQuery, callback)
 	}
 	return nil
 }

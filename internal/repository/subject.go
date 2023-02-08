@@ -53,13 +53,13 @@ func (r postgresSubjectRepository) GetAll() (entity.ListSubjects, error) {
 	return subjects, nil
 }
 
-func (r postgresSubjectRepository) Update(id uuid.UUID, subject *entity.Subject) (*entity.Subject, error) {
+func (r postgresSubjectRepository) Update(subject *entity.Subject) (*entity.Subject, error) {
 	ctx := context.Background()
 	q, args, _ := gq.
 		Update(
 			gq.T(subjectTable)).
 		Set(subject).
-		Where(gq.C("id").Eq(id)).
+		Where(gq.C("id").Eq(subject.ID)).
 		Returning(subjectRetCols...).
 		ToSQL()
 	if err := pgxscan.Get(ctx, r.datasource, subject, q, args...); err != nil {

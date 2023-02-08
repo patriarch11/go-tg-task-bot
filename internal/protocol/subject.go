@@ -8,6 +8,6 @@ import (
 type PostgresSubjectRepository interface {
 	Create(subject *entity.Subject) (*entity.Subject, error)
 	GetAll() (entity.ListSubjects, error)
-	Update(id uuid.UUID, subject *entity.Subject) (*entity.Subject, error)
+	Update(subject *entity.Subject) (*entity.Subject, error)
 	Delete(id uuid.UUID) error
 }

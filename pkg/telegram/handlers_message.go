@@ -7,9 +7,17 @@ import (
 func (b *Bot) handleMessage(message *tgbotapi.Message) error {
 	switch b.state {
 	case WaitForSubjectName:
-		return b.addNameSubject(message)
+		return b.startCreatingSubject(message)
+	case WaitForNewSubjectName:
+		return b.updateSubjectName(message)
+	case WaitForNewSubjectDescription:
+		return b.updateSubject(message)
 	case WaitForSubjectDescription:
-		return b.addDescriptionSubject(message)
+		return b.createSubject(message)
+	case WaitForTaskDescription:
+		return b.createTask(message)
+	case WaitForNewTaskDescription:
+		return b.updateTaskDescription(message)
 	default:
 		return nil
 	}

@@ -27,6 +27,7 @@ func NewPostgresTaskRepository(datasource *datasource.Datasource) protocol.Postg
 }
 
 func (r postgresTaskRepository) Create(task *entity.Task) (*entity.Task, error) {
+
 	ctx := context.Background()
 	q, args, _ := gq.
 		Insert(
@@ -54,13 +55,13 @@ func (r postgresTaskRepository) GetAllBySubjectID(subjectID uuid.UUID) (entity.L
 	return tasks, nil
 }
 
-func (r postgresTaskRepository) Update(id uuid.UUID, task *entity.Task) (*entity.Task, error) {
+func (r postgresTaskRepository) Update(task *entity.Task) (*entity.Task, error) {
 	ctx := context.Background()
 	q, args, _ := gq.
 		Update(
 			gq.T(taskTable)).
 		Set(task).
-		Where(gq.C("id").Eq(id)).
+		Where(gq.C("id").Eq(task.ID)).
 		Returning(taskRetCols...).
 		ToSQL()
 	if err := pgxscan.Get(ctx, r.datasource, task, q, args...); err != nil {

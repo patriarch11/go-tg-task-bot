@@ -14,7 +14,11 @@ type State int
 const (
 	None State = iota
 	WaitForSubjectName
+	WaitForNewSubjectName
 	WaitForSubjectDescription
+	WaitForNewSubjectDescription
+	WaitForTaskDescription
+	WaitForNewTaskDescription
 )
 
 type Bot struct {
@@ -24,6 +28,7 @@ type Bot struct {
 	adminUserName     string
 	state             State
 	subject           entity.Subject
+	task              entity.Task
 }
 
 func NewBot(bot *tgbotapi.BotAPI, userName string,
@@ -53,7 +58,9 @@ func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 			_ = b.handleCommand(update.Message)
 			continue
 		}
-		_ = b.handleMessage(update.Message)
+		if update.Message.Text != "" {
+			_ = b.handleMessage(update.Message)
+		}
 	}
 }
 

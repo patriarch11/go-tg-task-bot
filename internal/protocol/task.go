@@ -8,6 +8,6 @@ import (
 type PostgresTaskRepository interface {
 	Create(task *entity.Task) (*entity.Task, error)
 	GetAllBySubjectID(subjectID uuid.UUID) (entity.ListTasks, error)
-	Update(id uuid.UUID, task *entity.Task) (*entity.Task, error)
+	Update(task *entity.Task) (*entity.Task, error)
 	Delete(id uuid.UUID) error
 }
