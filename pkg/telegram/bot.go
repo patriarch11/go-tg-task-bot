@@ -2,16 +2,28 @@ package telegram
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/patriarch11/go-tg-task-bot/internal/protocol"
+	"github.com/patriarch11/go-tg-task-bot/internal/repository"
+	"github.com/patriarch11/go-tg-task-bot/pkg/datasource"
 	"log"
 )
 
 type Bot struct {
-	bot           *tgbotapi.BotAPI
-	adminUserName string
+	bot               *tgbotapi.BotAPI
+	taskRepository    protocol.PostgresTaskRepository
+	subjectRepository protocol.PostgresSubjectRepository
+	adminUserName     string
 }
 
-func NewBot(bot *tgbotapi.BotAPI, userName string) *Bot {
-	return &Bot{bot: bot, adminUserName: userName}
+func NewBot(bot *tgbotapi.BotAPI, userName string,
+	datasource *datasource.Datasource) *Bot {
+	taskRepository := repository.NewPostgresTaskRepository(datasource)
+	subjectRepository := repository.NewPostgresSubjectRepository(datasource)
+	return &Bot{
+		bot:               bot,
+		adminUserName:     userName,
+		taskRepository:    taskRepository,
+		subjectRepository: subjectRepository}
 }
 
 func (b *Bot) Start() {
