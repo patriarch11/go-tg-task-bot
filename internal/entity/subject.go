@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"encoding/json"
 	"github.com/gofrs/uuid"
-	"log"
 )
 
 type Subject struct {
@@ -14,20 +12,9 @@ type Subject struct {
 
 type ListSubjects []*Subject
 
-type SubjectCallback struct {
-	ID            uuid.UUID     `json:"id"`
-	OperationType OperationType `json:"operation_type"`
-}
-
-func (s Subject) CallbackData(operationType OperationType) SubjectCallback {
-	return SubjectCallback{
+func (s Subject) CallbackData(operationType OperationType) Callback {
+	return Callback{
 		ID:            s.ID,
 		OperationType: operationType,
 	}
-}
-
-func (s SubjectCallback) String() string {
-	str, _ := json.Marshal(s)
-	log.Printf("marshaled data: %s", string(str))
-	return string(str)
 }

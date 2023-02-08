@@ -16,6 +16,9 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 	case commandStart:
 		return b.handleStartCommand(message)
 	case commandAddSubject:
+		if !b.isAdmin(message.Chat.UserName) {
+			return b.notAdminResponse(message.Chat.ID)
+		}
 		return b.handleAddSubjectCommand(message)
 	case commandShowSubjects:
 		return b.handleShowSubjectsCommand(message)
@@ -36,14 +39,6 @@ func (b *Bot) handleStartCommand(message *tgbotapi.Message) error {
 }
 
 func (b *Bot) handleAddSubjectCommand(message *tgbotapi.Message) error {
-	if !b.isAdmin(message) {
-		msg := tgbotapi.NewMessage(message.Chat.ID, "permission denied")
-		if _, err := b.bot.Send(msg); err != nil {
-			return err
-		}
-		return nil
-	}
-
 	msg := tgbotapi.NewMessage(message.Chat.ID, "Введіть назву предмету")
 	b.state = WaitForSubjectName
 	if _, err := b.bot.Send(msg); err != nil {
@@ -53,37 +48,15 @@ func (b *Bot) handleAddSubjectCommand(message *tgbotapi.Message) error {
 }
 
 func (b *Bot) handleShowSubjectsCommand(message *tgbotapi.Message) error {
-	msg := tgbotapi.NewMessage(message.Chat.ID, "предмети")
-	msg.ReplyMarkup = numericKeyboard
-	if _, err := b.bot.Send(msg); err != nil {
+	subjects, err := b.subjectRepository.GetAll()
+	if err != nil {
 		return err
+	}
+	for _, subject := range subjects {
+		msg := subjectMessage(message, *subject)
+		if _, err := b.bot.Send(msg); err != nil {
+			return err
+		}
 	}
 	return nil
-}
-
-func (b *Bot) handleMessage(message *tgbotapi.Message) error {
-	switch b.state {
-	case WaitForSubjectName:
-		return b.addNameSubject(message)
-	case WaitForSubjectDescription:
-		return b.addDescriptionSubject(message)
-	default:
-		return nil
-	}
-}
-
-func (b *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
-	callback := tgbotapi.NewCallback(callbackQuery.ID, callbackQuery.Data)
-	if _, err := b.bot.Request(callback); err != nil {
-		return err
-	}
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, callbackQuery.Data)
-	if _, err := b.bot.Send(msg); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (b *Bot) isAdmin(message *tgbotapi.Message) bool {
-	return b.adminUserName == message.Chat.UserName
 }

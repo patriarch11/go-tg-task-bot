@@ -65,3 +65,13 @@ func (b *Bot) initUpdatesChannel() tgbotapi.UpdatesChannel {
 
 	return updates
 }
+
+func (b *Bot) isAdmin(userName string) bool {
+	return b.adminUserName == userName
+}
+
+func (b *Bot) notAdminResponse(chatID int64) error {
+	msg := tgbotapi.NewMessage(chatID, "permission denied")
+	_, err := b.bot.Send(msg)
+	return err
+}
