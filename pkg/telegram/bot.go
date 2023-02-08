@@ -21,7 +21,8 @@ func (b *Bot) Start() {
 
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
-		if update.Message == nil {
+		if update.CallbackQuery != nil {
+			_ = b.handleCallback(update.CallbackQuery)
 			continue
 		}
 		if update.Message.IsCommand() {

@@ -17,6 +17,8 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 		return b.handleStartCommand(message)
 	case commandAddSubject:
 		return b.handleAddSubjectCommand(message)
+	case commandShowSubjects:
+		return b.handleShowSubjectsCommand(message)
 	default:
 		msg := tgbotapi.NewMessage(message.Chat.ID, "Упс! Я не знаю такої команди...")
 		_, err := b.bot.Send(msg)
@@ -39,8 +41,32 @@ func (b *Bot) handleAddSubjectCommand(message *tgbotapi.Message) error {
 		_, err := b.bot.Send(msg)
 		return err
 	}
-	_, err := b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, "додавання предмету"))
-	return err
+	msg := tgbotapi.NewMessage(message.Chat.ID, "додавання предмету")
+	if _, err := b.bot.Send(msg); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *Bot) handleShowSubjectsCommand(message *tgbotapi.Message) error {
+	msg := tgbotapi.NewMessage(message.Chat.ID, "предмети")
+	msg.ReplyMarkup = numericKeyboard
+	if _, err := b.bot.Send(msg); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *Bot) handleCallback(callbackQuery *tgbotapi.CallbackQuery) error {
+	callback := tgbotapi.NewCallback(callbackQuery.ID, callbackQuery.Data)
+	if _, err := b.bot.Request(callback); err != nil {
+		return err
+	}
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, callbackQuery.Data)
+	if _, err := b.bot.Send(msg); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (b *Bot) handleMessage(message *tgbotapi.Message) {
