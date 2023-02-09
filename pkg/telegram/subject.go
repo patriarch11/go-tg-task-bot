@@ -19,7 +19,7 @@ func (b *Bot) startCreatingSubject(message *tgbotapi.Message) error {
 func (b *Bot) startUpdateSubject(callbackQuery *tgbotapi.CallbackQuery, callback entity.Callback) error {
 	b.subject.ID = callback.ID
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "Введіть нове ім'я предмету")
-	b.state = WaitForSubjectName
+	b.state = WaitForNewSubjectName
 	if _, err := b.bot.Send(msg); err != nil {
 		return err
 	}
