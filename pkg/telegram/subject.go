@@ -66,6 +66,7 @@ func (b *Bot) createSubject(message *tgbotapi.Message) error {
 }
 
 func (b *Bot) deleteSubject(callbackQuery *tgbotapi.CallbackQuery, callback entity.Callback) error {
+	// TODO: add cascade delete
 	tasks, err := b.taskRepository.GetAllBySubjectID(callback.ID)
 	if err != nil {
 		return err
