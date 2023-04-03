@@ -35,9 +35,6 @@ func main() {
 		},
 	})
 
-	/*sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)*/
-	// TODO: add close func
 	bot, err := di.InitializeBot(ctx, &conf)
 	if err != nil {
 		logrus.Fatal(err)

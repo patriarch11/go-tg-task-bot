@@ -50,6 +50,8 @@ func NewUpdateHandler(config *config.Config,
 }
 
 func (h *UpdateHandler) HandleUpdates() {
+	logrus.Info("Bot is serving")
+	logrus.Infof("Admin is @%s", h.adminUsername)
 	var err error
 
 	for update := range h.updates {

@@ -19,3 +19,9 @@ make migrate-up
 # run local bot
 make run
 ```
+
+**Build docker image**
+```shell
+# build docker image
+docker build . -f build/bot/Dockerfile -t task_bot
+```
