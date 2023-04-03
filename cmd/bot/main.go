@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/patriarch11/telegram-task-manager-bot/internal/config"
-	"github.com/patriarch11/telegram-task-manager-bot/internal/di"
+	"github.com/patriarch11/go-tg-task-bot/internal/config"
+	"github.com/patriarch11/go-tg-task-bot/internal/di"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/ypopivniak/envconfig"

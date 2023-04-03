@@ -2,7 +2,7 @@ package service
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/patriarch11/telegram-task-manager-bot/internal/domain/entity"
+	"github.com/patriarch11/go-tg-task-bot/internal/domain/entity"
 )
 
 type KeyboardService struct {

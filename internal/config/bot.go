@@ -1,6 +1,6 @@
 package config
 
-import "github.com/patriarch11/telegram-task-manager-bot/pkg/datasource/postgres"
+import "github.com/patriarch11/go-tg-task-bot/pkg/datasource/postgres"
 
 type Config struct {
 	LogLevel string           `required:"true" default:"info" split_words:"true"`

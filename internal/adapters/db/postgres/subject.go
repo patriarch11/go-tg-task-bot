@@ -5,8 +5,8 @@ import (
 	gq "github.com/doug-martin/goqu/v9"
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
-	"github.com/patriarch11/telegram-task-manager-bot/internal/domain/entity"
-	"github.com/patriarch11/telegram-task-manager-bot/pkg/datasource/postgres"
+	"github.com/patriarch11/go-tg-task-bot/internal/domain/entity"
+	"github.com/patriarch11/go-tg-task-bot/pkg/datasource/postgres"
 )
 
 var subjectTable = gq.T("subjects")

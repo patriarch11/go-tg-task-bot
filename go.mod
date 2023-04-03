@@ -1,4 +1,4 @@
-module github.com/patriarch11/telegram-task-manager-bot
+module github.com/patriarch11/go-tg-task-bot
 
 go 1.18
 
