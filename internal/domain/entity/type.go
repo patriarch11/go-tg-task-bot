@@ -28,3 +28,16 @@ func (id *ID) Scan(src interface{}) error {
 func IDFromString(v string) ID {
 	return ID{uuid.FromStringOrNil(v)}
 }
+
+type State int
+
+const (
+	Default                   State = iota
+	ReceiveSubjectName        State = iota
+	ReceiveSubjectDescription State = iota
+	ReceiveTask               State = iota
+
+	ReceiveUpdSubjectName        State = iota
+	ReceiveUpdSubjectDescription State = iota
+	ReceiveUpdTask               State = iota
+)

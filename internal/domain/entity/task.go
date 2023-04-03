@@ -6,4 +6,11 @@ type Task struct {
 	Description string `db:"description" json:"description"`
 }
 
+func (t *Task) CallbackData(operationType OperationType) Callback {
+	return Callback{
+		Id:            t.Id,
+		OperationType: operationType,
+	}
+}
+
 type TaskList []*Task

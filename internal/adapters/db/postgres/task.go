@@ -25,17 +25,17 @@ func NewTaskStorage(ds postgres.Datasource) *TaskStorage {
 	return &TaskStorage{ds}
 }
 
-func (r *TaskStorage) Create(ctx context.Context, task *entity.Task) (t *entity.Task, err error) {
+func (r *TaskStorage) Create(ctx context.Context, task *entity.Task) (*entity.Task, error) {
 	query, args, _ := gq.
 		Insert(taskTable).
 		Rows(task).
 		Returning(taskRetCols...).
 		ToSQL()
-	err = pgxscan.Get(ctx, r.ds, t, query, args...)
+	err := pgxscan.Get(ctx, r.ds, task, query, args...)
 	if err != nil {
 		return nil, err
 	}
-	return t, nil
+	return task, nil
 }
 
 func (r *TaskStorage) Get(ctx context.Context, id entity.ID) (*entity.Task, error) {
@@ -46,7 +46,7 @@ func (r *TaskStorage) GetBySubjectId(ctx context.Context, subjectId entity.ID) (
 	return r.getManyByFilters(ctx, taskTable.Col("subject_id").Eq(subjectId))
 }
 
-func (r *TaskStorage) Update(ctx context.Context, task *entity.Task) (t *entity.Task, err error) {
+func (r *TaskStorage) Update(ctx context.Context, task *entity.Task) (*entity.Task, error) {
 	query, args, _ := gq.
 		Update(taskTable).
 		Set(task).
@@ -55,11 +55,11 @@ func (r *TaskStorage) Update(ctx context.Context, task *entity.Task) (t *entity.
 		).
 		Returning(taskRetCols...).
 		ToSQL()
-	err = pgxscan.Get(ctx, r.ds, t, query, args...)
+	err := pgxscan.Get(ctx, r.ds, task, query, args...)
 	if err != nil {
 		return nil, err
 	}
-	return t, nil
+	return task, nil
 
 }
 
@@ -84,27 +84,29 @@ func (r *TaskStorage) Delete(ctx context.Context, id entity.ID) (err error) {
 	return nil
 }
 
-func (r *TaskStorage) getOneByFilters(ctx context.Context, filters ...gq.Expression) (task *entity.Task, err error) {
+func (r *TaskStorage) getOneByFilters(ctx context.Context, filters ...gq.Expression) (*entity.Task, error) {
+	var task entity.Task
 	query, args, _ := gq.
 		Select(taskRetCols...).
 		From(taskTable).
 		Where(filters...).
 		Limit(1).
 		ToSQL()
-	err = pgxscan.Get(ctx, r.ds, task, query, args...)
+	err := pgxscan.Get(ctx, r.ds, &task, query, args...)
 	if err != nil {
 		return nil, err
 	}
-	return task, nil
+	return &task, nil
 }
 
-func (r *TaskStorage) getManyByFilters(ctx context.Context, filters ...gq.Expression) (taskList entity.TaskList, err error) {
+func (r *TaskStorage) getManyByFilters(ctx context.Context, filters ...gq.Expression) (entity.TaskList, error) {
+	var taskList entity.TaskList
 	query, args, _ := gq.
 		Select(taskRetCols...).
 		From(taskTable).
 		Where(filters...).
 		ToSQL()
-	err = pgxscan.Get(ctx, r.ds, taskList, query, args...)
+	err := pgxscan.Select(ctx, r.ds, &taskList, query, args...)
 	if err != nil {
 		return nil, err
 	}
